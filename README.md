@@ -7,4 +7,4 @@
     * Apply “bucket tagged tags” to whatever you want (if you're an admin)
   * Create new study
     * Create an object in the domain with basic study config, then tag it as a “study”
-      * Basic study config: name, description, list of owners?
+      * Basic study config: name, description
