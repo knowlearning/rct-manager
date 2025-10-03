@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@knowlearning/agents": "^0.9.182",
     "@vitejs/plugin-basic-ssl": "^2.1.0",
     "vite-plugin-vuetify": "^2.1.2",
