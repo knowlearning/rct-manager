@@ -1,6 +1,8 @@
 <script setup>
   import { ref, reactive } from 'vue'
   import { vueScopeComponent } from '@knowlearning/agents/vue.js'
+  import StudyManager from './study-manager.vue'
+
   const environment = await Agent.environment()
   function login() { Agent.login('google') }
   function logout() { Agent.logout() }
@@ -71,7 +73,11 @@
         </v-btn>
       </v-toolbar>
       <v-container>
-        {{ activeStudy }}
+        <StudyManager
+          v-if="activeStudy"
+          :id="activeStudy"
+          :key="activeStudy"
+        />
       </v-container>
     </v-main>
   </v-app>
