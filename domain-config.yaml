@@ -1,0 +1,59 @@
+authorize:
+  sameDomain:
+    postgres: same_domain_authorization
+  crossDomain:
+    postgres: cross_domain_authorization
+postgres:
+  tables: {}
+  queries: {}
+  functions:
+    same_domain_authorization:
+      returns: BOOLEAN
+      language: PLpgSQL
+      body: |
+        BEGIN
+          RETURN TRUE;
+        END;
+      arguments:
+      - name: requestingUser
+        type: TEXT
+      - name: requestedScope
+        type: TEXT
+    cross_domain_authorization:
+      returns: BOOLEAN
+      language: PLpgSQL
+      body: |
+        BEGIN
+          RETURN TRUE;
+        END;
+      arguments:
+      - name: requestingDomain
+        type: TEXT
+      - name: requestingUser
+        type: TEXT
+      - name: requestedScope
+        type: TEXT
+
+agent: |
+  import Agent, { getAgent } from 'npm:@knowlearning/agents/deno.js'
+
+  // HANDLER AND DEFS FOR TAGS
+  const TagAgent = getAgent('tags.knowlearning.systems')
+  const agentTags = await TagAgent.state('tags')
+
+  Agent.on('child', child => {
+    const { environment: { user } } = child
+
+    child.on('mutate', ({ scope, patch }) => {
+      if (scope === 'tags') {
+        patch.forEach(async ({ path, value:patchValue }) => {
+          if (path.length === 2) {
+            const [ tagId, contentId ] = path
+            const { value, partition=user, context=null } = patchValue
+            if (!agentTags[tagId]) agentTags[tagId] = {}
+            agentTags[tagId][contentId] = { contributor: user, partition, value, context }
+          }
+        })
+      }
+    })
+  })
